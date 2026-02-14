@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница программы для строителей</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: black;
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        nav a:hover {
+            background-color: #ddd;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .h1 {
+            color: #909490;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        /* Улучшенная кнопка Новый заказ */
+        .new-order-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .new-order-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Шапка сайта -->
+    <header>
+        <h1 class="h1">Программа для строителей<br>Сумма предоплат: {{ amount }}<br>Сумма остатков: {{ remains }}</h1>
+    </header>
+
+    <a href="{% url 'index' %}" class="new-order-button"><- Назад</a>
+
+    <!-- Основной контейнер -->
+    <div class="container">
+        <h1>Список текущих заказов:</h1>
+        <a href="/add_day/{{ id }}" class="new-order-button">Новый заказ +</a>
+        
+        <!-- Таблица заказов -->
+        <table>
+            <tr>
+                <th>Дата</th>
+                <th>Дата</th>
+            </tr>
+            {% for day in days %}
+            <tr>
+                <td><a href="/consumables/{{ day.id }}">{{ day.date }}</a></td>
+                <td>{{ day.amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+</body>
+</html>
