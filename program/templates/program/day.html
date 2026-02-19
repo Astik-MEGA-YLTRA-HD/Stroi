@@ -106,12 +106,12 @@
         <table>
             <tr>
                 <th>Дата</th>
-                <th>Дата</th>
+                <th>Сумма</th>
             </tr>
             {% for day in days %}
             <tr>
                 <td><a href="/consumables/{{ day.id }}">{{ day.date }}</a></td>
-                <td>{{ day.amount }}</td>
+                <td>{{ day.total_consumables_amount }}</td>
             </tr>
             {% endfor %}
         </table>

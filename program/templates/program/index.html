@@ -92,7 +92,7 @@
     
     <!-- Шапка сайта -->
     <header>
-        <h1 class="h1">Программа для строителей<br>Сумма предоплат: {{ amount }}<br>Сумма остатков: {{ remains }}</h1>
+        <h1 class="h1">Программа для строителей<br>Сумма предоплат: {{ amount }} руб.<br>Сумма остатков: {{ remains }} руб.</h1>
     </header>
     
     <!-- Основной контейнер -->
@@ -113,9 +113,13 @@
             <tr>
                 <td><a href="/day/{{ order.id }}">{{ order.title }}</a></td>
                 <td>{{ order.address }}</td>
-                <td>{{ order.amount }}</td>
-                <td>{{ order.remains }}</td>
-                <td>{{ order.deadline }}</td>
+                <td>{{ order.amount|floatformat:"2"}}</td>
+                <td>{{ order.remains|floatformat:"2"}}</td>
+                <td>{{ order.deadline|date:"d.m.Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Нет активных заказов</td>
             </tr>
             {% endfor %}
         </table>
