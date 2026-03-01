@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from decimal import Decimal
 from program.models import Orders, Day, Сonsumables, Payment
@@ -102,42 +102,47 @@ def consumables(request, _id):
 # Добавление расходных материалов
 def add_consumables(request, _id):
     day = Day.objects.get(id=_id)
+
     if request.method == 'POST':
         title = request.POST.get("title", "")
         count_str = request.POST.get("count", "").strip()
         prise_str = request.POST.get("prise", "").strip()
-        
-        if title and prise_str:
+        unit = request.POST.get("unit", "")
+
+        if title and count_str and prise_str and unit:
             try:
-                count = int(count_str)
+                count = Decimal(count_str)
                 prise = Decimal(prise_str)
-                
-                # Создание нового расходного материала
+
                 new_consumable = Сonsumables.objects.create(
                     title=title,
                     count=count,
                     prise=prise,
-                    amount=Decimal(prise) * Decimal(count),
+                    amount=prise * count,
+                    unit=unit,
                     day=day
                 )
-                
-                # Пересчёт суммы расходов за день
-                updated_amount = sum(c.amount for c in Сonsumables.objects.filter(day=day))
-                day.amount = updated_amount
+
+                # 🔁 Пересчёт дня
+                total_consumables = sum(c.amount for c in Сonsumables.objects.filter(day=day))
+                total_payments = sum(p.amount for p in Payment.objects.filter(day=day))
+                day.amount = total_consumables + total_payments
                 day.save()
-                
-                # Пересчёт общего баланса заказа
+
+                # 🔁 Пересчёт заказа
                 order = day.order
                 consumed_amount = sum(d.amount for d in Day.objects.filter(order=order))
                 order.remains = order.amount - consumed_amount
                 order.save()
-                
+
                 messages.success(request, f'Расходный материал "{new_consumable.title}" успешно добавлен.')
                 return redirect('consumables', _id=_id)
+
             except Exception as e:
-                messages.error(request, f'Ошибка при добавлении расходного материала: {e}')
+                messages.error(request, f'Ошибка: {e}')
         else:
-            messages.warning(request, 'Необходимо заполнить все обязательные поля!')
+            messages.warning(request, 'Необходимо заполнить все поля!')
+
     return render(request, 'program/add_consumables.html', {
         'id': _id,
         'order_id': day.order.pk
@@ -181,5 +186,93 @@ def add_payment(request, _id):
             messages.warning(request, 'Необходимо заполнить все обязательные поля!')
     return render(request, 'program/add_payment.html', {
         'id': _id,
+        'order_id': day.order.pk
+    })
+
+# редактирование 
+def edit_consumables(request, _id):
+    consumable = get_object_or_404(Сonsumables, pk=_id)
+    day = consumable.day
+
+    if request.method == 'POST':
+        title = request.POST.get("title")
+        count_str = request.POST.get("count")
+        prise_str = request.POST.get("prise")
+        unit = request.POST.get("unit")
+
+        if title and count_str and prise_str and unit:
+            try:
+                count = Decimal(count_str)
+                prise = Decimal(prise_str)
+
+                consumable.title = title
+                consumable.count = count
+                consumable.prise = prise
+                consumable.unit = unit
+                consumable.amount = count * prise
+                consumable.save()
+
+                # 🔁 Пересчёт дня
+                total_consumables = sum(c.amount for c in Сonsumables.objects.filter(day=day))
+                total_payments = sum(p.amount for p in Payment.objects.filter(day=day))
+                day.amount = total_consumables + total_payments
+                day.save()
+
+                # 🔁 Пересчёт заказа
+                order = day.order
+                consumed_amount = sum(d.amount for d in Day.objects.filter(order=order))
+                order.remains = order.amount - consumed_amount
+                order.save()
+
+                messages.success(request, "Материал успешно обновлён.")
+                return redirect('consumables', _id=day.pk)
+
+            except Exception as e:
+                messages.error(request, f'Ошибка: {e}')
+
+    return render(request, 'program/edit_consumables.html', {
+        'consumable': consumable,
+        'id': day.pk,
+        'order_id': day.order.pk
+    })
+
+
+def edit_payment(request, _id):
+    payment = get_object_or_404(Payment, pk=_id)
+    day = payment.day
+
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount_str = request.POST.get("amount")
+
+        if name and amount_str:
+            try:
+                amount = Decimal(amount_str)
+
+                payment.name = name
+                payment.amount = amount
+                payment.save()
+
+                # 🔁 Пересчёт дня
+                total_consumables = sum(c.amount for c in Сonsumables.objects.filter(day=day))
+                total_payments = sum(p.amount for p in Payment.objects.filter(day=day))
+                day.amount = total_consumables + total_payments
+                day.save()
+
+                # 🔁 Пересчёт заказа
+                order = day.order
+                consumed_amount = sum(d.amount for d in Day.objects.filter(order=order))
+                order.remains = order.amount - consumed_amount
+                order.save()
+
+                messages.success(request, "Платёж успешно обновлён.")
+                return redirect('consumables', _id=day.pk)
+
+            except Exception as e:
+                messages.error(request, f'Ошибка: {e}')
+
+    return render(request, 'program/edit_payment.html', {
+        'payment': payment,
+        'id': day.pk,
         'order_id': day.order.pk
     })

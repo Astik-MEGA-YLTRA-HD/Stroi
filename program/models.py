@@ -13,10 +13,20 @@ class Day(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
 
 class Сonsumables(models.Model):
+
+    UNIT_CHOICES = [
+        ('kg', 'Кг'),
+        ('pcs', 'Шт'),
+        ('l', 'Л'),
+        ('m3', 'М³'),
+        ('m', 'Метр'),
+    ]
+
     title = models.CharField(max_length=255)
     count = models.DecimalField(max_digits=30, decimal_places=2)
     prise = models.DecimalField(max_digits=30, decimal_places=2)
     amount = models.DecimalField(max_digits=30, decimal_places=2)
+    unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='pcs')
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
 class Payment(models.Model):
