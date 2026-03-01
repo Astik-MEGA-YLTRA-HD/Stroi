@@ -62,7 +62,7 @@
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #101010;
         }
         
         th {
@@ -106,7 +106,7 @@
 
         
         <!-- Таблица заказов -->
-        <table>
+        <table border="1">
             <tr>
                 <th>Название</th>
                 <th>Количество</th>
@@ -121,6 +121,32 @@
                 <td>{{ con.amount }}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Итог:</td>
+                <td>{{ amount_consum }}</td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <a href="/add_payment/{{ id }}" class="new-order-button">Выплота работнику +</a>
+
+        <table border="1">
+            <tr>
+                <th>Имя</th>
+                <th>Сумма</th>
+            </tr>
+            {% for pay in paym %}
+            <tr>
+                <td>{{ pay.name }}</td>
+                <td>{{ pay.amount }}</td>
+            </tr>
+            {% endfor %}
+             <tr>
+                <td>Итог:</td>
+                <td>{{ amount_paym }}</td>
+            </tr>
         </table>
     </div>
     

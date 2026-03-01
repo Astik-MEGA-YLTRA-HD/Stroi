@@ -14,7 +14,12 @@ class Day(models.Model):
 
 class Сonsumables(models.Model):
     title = models.CharField(max_length=255)
-    count = models.DecimalField(max_digits=20, decimal_places=2)
-    prise = models.DecimalField(max_digits=20, decimal_places=2)
-    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    count = models.DecimalField(max_digits=30, decimal_places=2)
+    prise = models.DecimalField(max_digits=30, decimal_places=2)
+    amount = models.DecimalField(max_digits=30, decimal_places=2)
+    day = models.ForeignKey(Day, on_delete=models.CASCADE)
+
+class Payment(models.Model):
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=30, decimal_places=2)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
