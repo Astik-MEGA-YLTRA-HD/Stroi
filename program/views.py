@@ -1,13 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from decimal import Decimal
-from program.models import Orders, Day, Сonsumables
+from program.models import Orders, Day, Сonsumables, Payment
 
 # Функция индекса
-from django.shortcuts import render
-from django.core.paginator import Paginator
-from .models import Orders
-
 def index(request):
     # Получаем все заказы, отсортированные по сроку сдачи (от ближайшего к дальнейшему)
     orders = Orders.objects.all().order_by('-deadline')
@@ -24,6 +20,7 @@ def index(request):
     }
 
     return render(request, 'program/index.html', context)
+
 
 # Добавление заказа
 def add_order(request):
@@ -51,6 +48,7 @@ def add_order(request):
             messages.warning(request, 'Все поля обязательны для заполнения!')
     return render(request, 'program/add_orders.html')
 
+
 # Просмотр дней заказа
 def day(request, _id):
     days = Day.objects.filter(order__pk=_id).order_by('-date').select_related()
@@ -58,7 +56,7 @@ def day(request, _id):
 
     # Добавляем предварительную подготовку данных для вывода суммы
     for day in days:
-        day.total_consumables_amount = sum(c.amount for c in Сonsumables.objects.filter(day=day))
+        day.total_consumables_amount = Decimal(sum(c.amount for c in Сonsumables.objects.filter(day=day))) + Decimal(sum(p.amount for p in Payment.objects.filter(day=day)))
 
     return render(request, 'program/day.html', {
         'days': days,
@@ -83,17 +81,23 @@ def add_day(request, _id):
             messages.warning(request, 'Поле "дата" обязательно для заполнения!')
     return render(request, 'program/add_day.html', {'id': _id})
 
+
 # Просмотр расходных материалов
 def consumables(request, _id):
     day = Day.objects.select_related('order').get(pk=_id)
     consum = Сonsumables.objects.filter(day=_id)
-    amount_total = sum(c.amount for c in consum)
+    paym = Payment.objects.filter(day=_id)
+    amount_total_consum = sum(c.amount for c in consum)
+    amount_total_paym = sum(p.amount for p in paym)
     return render(request, 'program/consumables.html', {
+        'paym': paym,
         'consum': consum,
-        'amount': amount_total,
+        'amount_consum': amount_total_consum,
+        'amount_paym': amount_total_paym,
         'id': _id,
         'order_id': day.order.pk
     })
+
 
 # Добавление расходных материалов
 def add_consumables(request, _id):
@@ -135,6 +139,47 @@ def add_consumables(request, _id):
         else:
             messages.warning(request, 'Необходимо заполнить все обязательные поля!')
     return render(request, 'program/add_consumables.html', {
+        'id': _id,
+        'order_id': day.order.pk
+    })
+
+
+# Добавление расходных материалов
+def add_payment(request, _id):
+    day = Day.objects.get(id=_id)
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount = request.POST.get("amount")
+        
+        if name and amount:
+
+                # Создание нового расходного материала
+                new_consumable = Payment.objects.create(
+                    name=name,
+                    amount=amount,
+                    day=day
+                )
+                
+                # Пересчёт суммы расходов за день
+                updated_amount = sum(p.amount for p in Payment.objects.filter(day=day))
+                print(updated_amount)
+                day.amount += updated_amount
+                print("======")
+                print(day.amount)
+                day.save()
+                
+                # Пересчёт общего баланса заказа
+                order = day.order
+                consumed_amount = sum(d.amount for d in Day.objects.filter(order=order))
+                order.remains = order.amount - consumed_amount
+                order.save()
+                
+                messages.success(request, f'Расходный материал "{new_consumable.name}" успешно добавлен.')
+                return redirect('consumables', _id=_id)
+
+        else:
+            messages.warning(request, 'Необходимо заполнить все обязательные поля!')
+    return render(request, 'program/add_payment.html', {
         'id': _id,
         'order_id': day.order.pk
     })
