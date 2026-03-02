@@ -98,6 +98,20 @@ def consumables(request, _id):
         'order_id': day.order.pk
     })
 
+def document(request, _id):
+    day = Day.objects.select_related('order').get(pk=_id)
+    consum = Сonsumables.objects.filter(day=_id)
+    paym = Payment.objects.filter(day=_id)
+    amount_total_consum = sum(c.amount for c in consum)
+    amount_total_paym = sum(p.amount for p in paym)
+    return render(request, 'program/document.html', {
+        'paym': paym,
+        'consum': consum,
+        'amount_consum': amount_total_consum,
+        'amount_paym': amount_total_paym,
+        'id': _id,
+        'order_id': day.order.pk
+    })
 
 # Добавление расходных материалов
 def add_consumables(request, _id):

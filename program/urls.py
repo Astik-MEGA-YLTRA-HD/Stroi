@@ -7,6 +7,7 @@ urlpatterns = [
     path('day/<int:_id>/', views.day, name='day'),
     path('add_day/<int:_id>/', views.add_day, name='add_day'),
     path('consumables/<int:_id>/', views.consumables, name='consumables'),
+    path('document/<int:_id>/', views.document, name='document'),
     path('add_consumables/<int:_id>/', views.add_consumables, name='add_consumables'),
     path('add_payment/<int:_id>/', views.add_payment, name='add_payment'),
     path('edit_consumables/<int:_id>/', views.edit_consumables, name='edit_consumables'),
