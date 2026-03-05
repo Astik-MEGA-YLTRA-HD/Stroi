@@ -1,15 +1,22 @@
 from django.urls import path
-from program import views
+from program.views import (
+    CustomLoginView, logout_view, register_view,
+    index, add_order, day, add_day, consumables,
+    add_consumables, add_payment, edit_consumables, edit_payment, document
+)
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('add_order/', views.add_order, name='add_order'),
-    path('day/<int:_id>/', views.day, name='day'),
-    path('add_day/<int:_id>/', views.add_day, name='add_day'),
-    path('consumables/<int:_id>/', views.consumables, name='consumables'),
-    path('document/<int:_id>/', views.document, name='document'),
-    path('add_consumables/<int:_id>/', views.add_consumables, name='add_consumables'),
-    path('add_payment/<int:_id>/', views.add_payment, name='add_payment'),
-    path('edit_consumables/<int:_id>/', views.edit_consumables, name='edit_consumables'),
-    path('edit_payment/<int:_id>/', views.edit_payment, name='edit_payment'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', logout_view, name='logout'),  # новая функция
+    path('register/', register_view, name='register'),
+    path('', index, name='index'),
+    path('order/add/', add_order, name='add_order'),
+    path('order/<int:_id>/day/', day, name='day'),
+    path('order/<int:_id>/day/add/', add_day, name='add_day'),
+    path('day/<int:_id>/consumables/', consumables, name='consumables'),
+    path('day/<int:_id>/consumables/add/', add_consumables, name='add_consumables'),
+    path('day/<int:_id>/payment/add/', add_payment, name='add_payment'),
+    path('consumables/<int:_id>/edit/', edit_consumables, name='edit_consumables'),
+    path('payment/<int:_id>/edit/', edit_payment, name='edit_payment'),
+    path('day/<int:_id>/document/', document, name='document'),
 ]

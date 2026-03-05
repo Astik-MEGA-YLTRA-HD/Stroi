@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <title>Печать отчёта</title>
@@ -15,7 +16,8 @@
             margin-bottom: 30px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid black;
             padding: 8px;
             text-align: center;
@@ -46,51 +48,53 @@
         }
     </script>
 </head>
+
 <body>
 
-<button type="button" class="print-btn" onclick="printPage()">Печать</button>
+    <button type="button" class="print-btn" onclick="printPage()">Печать</button>
 
-<h2>Расходные материалы</h2>
-<table>
-    <tr>
-        <th>Название</th>
-        <th>Количество</th>
-        <th>Ед. изм.</th>
-        <th>Цена за ед.</th>
-        <th>Сумма</th>
-    </tr>
-    {% for c in consum %}
-    <tr>
-        <td>{{ c.title }}</td>
-        <td>{{ c.count }}</td>
-        <td>{{ c.unit }}</td>
-        <td>{{ c.prise }}</td>
-        <td>{{ c.amount }}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="4"></td>
-        <td><strong>Итог: {{ amount_consum }}</strong></td>
-    </tr>
-</table>
+    <h2>Расходные материалы</h2>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Количество</th>
+            <th>Ед. изм.</th>
+            <th>Цена за ед.</th>
+            <th>Сумма</th>
+        </tr>
+        {% for c in consum %}
+        <tr>
+            <td>{{ c.title }}</td>
+            <td>{{ c.count }}</td>
+            <td>{{ c.unit }}</td>
+            <td>{{ c.prise }}</td>
+            <td>{{ c.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4"></td>
+            <td><strong>Итог: {{ amount_consum }}</strong></td>
+        </tr>
+    </table>
 
-<h2>Платежи</h2>
-<table>
-    <tr>
-        <th>Название</th>
-        <th>Сумма</th>
-    </tr>
-    {% for p in paym %}
-    <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.amount }}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td></td>
-        <td><strong>Итог: {{ amount_paym }}</strong></td>
-    </tr>
-</table>
+    <h2>Платежи</h2>
+    <table>
+        <tr>
+            <th>Название</th>
+            <th>Сумма</th>
+        </tr>
+        {% for p in paym %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td><strong>Итог: {{ amount_paym }}</strong></td>
+        </tr>
+    </table>
 
 </body>
+
 </html>

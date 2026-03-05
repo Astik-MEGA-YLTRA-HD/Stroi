@@ -1,89 +1,164 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<title>Расходники и платежи | Программа для строителей</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-body {font-family:'Roboto',sans-serif;background:#f0f2f5;margin:0;color:#333;}
-header {background:#4CAF50;color:white;text-align:center;padding:15px 0;font-size:24px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.container {max-width:1000px;margin:40px auto;background:white;padding:30px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-h1 {margin-top:0;margin-bottom:20px;}
-table {width:100%;border-collapse:collapse;margin-bottom:20px;}
-th, td {padding:12px 15px;border-bottom:1px solid #050505;text-align:left;}
-th {background:#f9f9f9;}
-tr:hover {background:#f1f1f1;}
-.btn {background:#4CAF50;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;text-decoration:none;}
-.btn:hover {background:#45a049;}
-.stats {margin-bottom:20px;font-size:18px;}
-.add-btn {margin-bottom:20px; display:inline-block;}
-.back-link {display:inline-block;margin-bottom:20px;color:#4CAF50;font-weight:500;text-decoration:none;}
-.back-link:hover{text-decoration:underline;}
-</style>
+    <meta charset="UTF-8">
+    <title>Расходники и платежи | Программа для строителей</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            color: #333;
+        }
+
+        header {
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 24px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #050505;
+            text-align: left;
+        }
+
+        th {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .add-btn {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
 
-<header>Программа для строителей</header>
+    <header>Программа для строителей</header>
 
-<div class="container">
-<a href="{% url 'day' _id=order_id %}" class="back-link"><- Назад</a>
-<h1>Расходники и платежи</h1>
+    <div class="container">
+        <a href="{% url 'day' _id=order_id %}" class="back-link"><- Назад</a>
+                <h1>Расходники и платежи</h1>
 
-<a href="{% url 'add_consumables' _id=id %}" class="btn add-btn">Добавить расходник</a>
-<a href="{% url 'add_payment' _id=id %}" class="btn add-btn">Добавить платеж</a>
-<a href="{% url 'document' _id=id %}" class="btn add-btn">Печать</a>
+                <a href="{% url 'add_consumables' _id=id %}" class="btn add-btn">Добавить расходник</a>
+                <a href="{% url 'add_payment' _id=id %}" class="btn add-btn">Добавить платеж</a>
+                <a href="{% url 'document' _id=id %}" class="btn add-btn">Печать</a>
 
-<h2>Расходники</h2>
-<table border="1">
-<tr>
-<th>Название</th>
-<th>Количество</th>
-<th>Ед. изм.</th>
-<th>Цена за ед.</th>
-<th>Сумма</th>
-<th>Действия</th>
-</tr>
-{% for c in consum %}
-<tr>
-<td>{{ c.title }}</td>
-<td>{{ c.count }}</td>
-<td>{{ c.unit }}</td>
-<td>{{ c.prise }}</td>
-<td>{{ c.amount }}</td>
-<td><a href="{% url 'edit_consumables' _id=c.id %}" class="btn">Редактировать</a></td>
-</tr>
-{% endfor %}
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>Итог:</td>
-<td>{{ amount_consum }}</td>
-</tr>
-</table>
+                <h2>Расходники</h2>
+                <table border="1">
+                    <tr>
+                        <th>Название</th>
+                        <th>Количество</th>
+                        <th>Ед. изм.</th>
+                        <th>Цена за ед.</th>
+                        <th>Сумма</th>
+                        <th>Действия</th>
+                    </tr>
+                    {% for c in consum %}
+                    <tr>
+                        <td>{{ c.title }}</td>
+                        <td>{{ c.count }}</td>
+                        <td>{{ c.unit }}</td>
+                        <td>{{ c.prise }}</td>
+                        <td>{{ c.amount }}</td>
+                        <td><a href="{% url 'edit_consumables' _id=c.id %}" class="btn">Редактировать</a></td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Итог:</td>
+                        <td>{{ amount_consum }}</td>
+                    </tr>
+                </table>
 
-<h2>Платежи</h2>
-<table border="1">
-<tr>
-<th>Название</th>
-<th>Сумма</th>
-<th>Действия</th>
-</tr>
-{% for p in paym %}
-<tr>
-<td>{{ p.name }}</td>
-<td>{{ p.amount }}</td>
-<td><a href="{% url 'edit_payment' _id=p.id %}" class="btn">Редактировать</a></td>
-</tr>
-{% endfor %}
-<tr>
-<td></td>
-<td>Итог:</td>
-<td>{{ amount_paym }}</td>
-</tr>
-</table>
+                <h2>Платежи</h2>
+                <table border="1">
+                    <tr>
+                        <th>Название</th>
+                        <th>Сумма</th>
+                        <th>Действия</th>
+                    </tr>
+                    {% for p in paym %}
+                    <tr>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.amount }}</td>
+                        <td><a href="{% url 'edit_payment' _id=p.id %}" class="btn">Редактировать</a></td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td>Итог:</td>
+                        <td>{{ amount_paym }}</td>
+                    </tr>
+                </table>
 
-</div>
+    </div>
 </body>
+
 </html>
